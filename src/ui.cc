@@ -66,16 +66,15 @@ void scoutResult(Army& a, MissionReport& m) {
 bool tradeMenu() {
   return true;
 }
-void selectTrade(Army& a) {
-  std::cout << "The town trader has: ";
-  Trader t;
+void selectTrade(Army& a, Trader& t) {
+  std::cout << "The town trader has:\n";
   displayTraderItems(t);
   return;
 }
 
 void displayTraderItems(Trader& t) {
   for(unsigned i = 0; i < t.items.size(); i++) {
-    std::cout << t.items.at(i).item << " : " << t.items.at(i).quantity << "\n";
+    std::cout << itemNames[t.items.at(i).item] << " : " << t.items.at(i).quantity << "\n";
   }
 }
 

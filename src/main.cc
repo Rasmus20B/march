@@ -5,25 +5,24 @@
 int main() {
   
   size_t day = 1;
-  size_t stage = 0;
+  size_t stage = 1;
+  size_t prevStage = 0;
   march::Army a{};
   a.generate();
   march::Area area{"battelfield", march::AREA_ROAD, std::nullopt};
 
   while(a.alive > 0) {
-    if(stage % 5 == 0) {
+    if(stage % 5 == 0 && stage != prevStage) {
       march::Trader t;
       area.name = "town";
       area.type = march::AREA_TOWN;
       area.trader = t;
-      t.items.push_back({march::TRADING_FOOD, 5});
-      t.items.push_back({march::TRADING_WEAPONS, 3});
-      t.items.push_back({march::TRADING_MERCS, 8});
-    } else {
+    } else if (stage != prevStage){
       area.name = "wilderness";
       area.type = march::AREA_ROAD;
       area.trader = std::nullopt;
     }
+    prevStage = stage;
     std::cout << "Day " << day << "\n=====================\n";
     std::cout << "Location: " << area.name << "\n=====================\n";
 menu:
@@ -37,8 +36,10 @@ menu:
         break;
       case 3:
         if(area.type == march::AREA_TOWN) {
-          march::selectTrade(a);
-          break;   
+          if(stage == prevStage) {
+            march::selectTrade(a, *area.trader);
+          }
+          break;
         }
       default:
         std::cout << "Invalid choice\n";
