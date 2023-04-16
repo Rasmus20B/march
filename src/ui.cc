@@ -12,6 +12,7 @@ int gameMenu(Area& a) {
   if(a.type == AREA_TOWN) {
     std::cout << "(3) Trade/Talk to locals.\n";
   }
+  std::cout << "(9) Quit...\n";
 
   int choice;
   std::cin >> choice;

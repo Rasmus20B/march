@@ -15,4 +15,6 @@
 #include "area.h"
 #include "day.h"
 
-namespace march {}
+namespace march {
+  int gameloop();
+}
