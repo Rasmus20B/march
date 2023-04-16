@@ -26,6 +26,7 @@ int main() {
     }
     std::cout << "Day " << day << "\n=====================\n";
     std::cout << "Location: " << area.name << "\n=====================\n";
+menu:
     int choice = march::gameMenu(area);
     switch(choice) {
       case 1:
@@ -35,10 +36,13 @@ int main() {
         march::selectScout(a);
         break;
       case 3:
-        march::selectTrade(a);
-        break;   
+        if(area.type == march::AREA_TOWN) {
+          march::selectTrade(a);
+          break;   
+        }
       default:
         std::cout << "Invalid choice\n";
+        goto menu;
     }
     a.updateStats();
     a.printSupplies();
