@@ -1,0 +1,11 @@
+TODO: Implement 'left behind' status condition.
+  - A given soldier will feel the need to stay if he spends too long within 1 place, abandoning the mission to get back home.
+  - If the soldier stays then that equals dead, and he is removed from the game. 
+
+TODO: Implement trading system. 
+  - Player should be able to select various items from inventory to trade with a given merchant that they have selected items from.
+
+TODO: Implement RANDOM EVENTS with decisions.
+  - Decisions can completely alter the game and some may be a 1 hit game over
+
+TODO: All status effects are random chance based, with the odds changing depending on status
