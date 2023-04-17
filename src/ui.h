@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdarg>
 #include <sstream>
+#include <string_view>
 
 #include "area.h"
 #include "army.h"
@@ -15,6 +16,8 @@ namespace march {
 
 // Main game menu. May display different options depending on area/event
 int gameMenu(Area& a);
+
+void displayDayAndLocation(int day, std::string_view location);
 
 // displays the menu to select the scouts that will be senton mission
 void selectScout(Army& a);

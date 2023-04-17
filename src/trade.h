@@ -4,26 +4,11 @@
 #include <random>
 #include <string_view>
 
+#include "supply_items.h"
+#include "trade_element.h"
 #include "army.h"
 
 namespace march { 
-enum TradingItem {
-  ITEM_WEAPONS,
-  ITEM_FOOD,
-  ITEM_MERCS,
-  ITEM_SIZE
-};
-
-constexpr std::array<std::string_view, ITEM_SIZE> itemNames = {
-  "WEAPONS",
-  "FOOD",
-  "MERCENARIES"
-};
-
-struct TradeElement {
-  TradingItem item;
-  size_t quantity;
-};
 
 struct Trade {
   std::vector<TradeElement> player_items;
@@ -42,7 +27,6 @@ struct Trader {
   std::vector<TradeElement> items;
 };
 
-int trade(Army& a, Trader& t);
-int addItemToTrade();
+int addItemToTrade(Trade& t, TradingItem item, size_t quantity);
 int makeTrade(Army& a, Trader& t, Trade& tr);
 }

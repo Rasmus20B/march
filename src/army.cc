@@ -18,6 +18,9 @@ void Army::updateStats() {
 }
 
 void Army::printSupplies() {
-  std::cout << "The Army currently has " << supplies << " supplies";
+  std::cout << "Army Supplies:\n";
+  for(auto i : items) {
+    std::cout << itemNames[i.item] << " : " << i.quantity << "\n";
+  }
 }
 }

@@ -12,17 +12,16 @@ int gameloop() {
   while(a.alive > 0) {
     if(stage % 5 == 0 && stage != prevStage) {
       Trader t;
-      area.name = "town";
+      area.name = "Town";
       area.type = AREA_TOWN;
       area.trader = t;
     } else if (stage != prevStage){
-      area.name = "wilderness";
+      area.name = "Wilderness";
       area.type = AREA_ROAD;
       area.trader = std::nullopt;
     }
     prevStage = stage;
-    std::cout << "Day " << day << "\n=====================\n";
-    std::cout << "Location: " << area.name << "\n=====================\n";
+    displayDayAndLocation(day, area.name);
 menu:
     int choice = gameMenu(area);
     switch(choice) {

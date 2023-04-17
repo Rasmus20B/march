@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "trade.h"
 
 namespace march {
 int selectLevel(int l) {
@@ -17,6 +18,11 @@ int gameMenu(Area& a) {
   int choice;
   std::cin >> choice;
   return choice;
+}
+
+void displayDayAndLocation(int day, std::string_view location) {
+    std::cout << "Day " << day << "\n=====================\n";
+    std::cout << "Location: " << location << "\n=====================\n";
 }
 
 void selectScout(Army& a) {
@@ -64,20 +70,47 @@ void scoutResult(Army& a, MissionReport& m) {
       break;
   }
 }
+
+void displayTraderItems(Trader& t) {
+  for(unsigned i = 0; i < t.items.size(); i++) {
+    std::cout << "(" << i << ") " <<itemNames[t.items.at(i).item] << " : " << t.items.at(i).quantity << "\n";
+  }
+}
+
 bool tradeMenu() {
   return true;
 }
 void selectTrade(Army& a, Trader& t) {
   std::cout << "The town trader has:\n";
   displayTraderItems(t);
+
+  Trade tr;
+
+  size_t choice = 0;
+  bool finish = false;
+  while(!finish) {
+    std::cout << "Please choose an item to add to trade.\n(9) To Finish Trade\n";
+    std::cin >> choice;
+    if(choice == 9) {
+      break;
+    } else if(choice > t.items.size()) {
+      std::cout << "Invalid Item Choice!\n";
+      continue;
+    } else {
+      std::cout << "Please select quantity of " << itemNames[t.items[choice].item] << "\n";
+      size_t quant{};
+      std::cin >> quant;
+      if(quant > t.items[choice].quantity) {
+        std::cout << "Invalid quantity!\n";
+        continue;
+      }
+      addItemToTrade(tr, t.items[choice].item, quant);
+    }
+  }
+  makeTrade(a, t, tr);
   return;
 }
 
-void displayTraderItems(Trader& t) {
-  for(unsigned i = 0; i < t.items.size(); i++) {
-    std::cout << itemNames[t.items.at(i).item] << " : " << t.items.at(i).quantity << "\n";
-  }
-}
 
 void selectItemForTrade(Trade& t) {
   return;
