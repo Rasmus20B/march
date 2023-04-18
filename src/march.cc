@@ -22,6 +22,7 @@ int gameloop() {
     }
     prevStage = stage;
     displayDayAndLocation(day, area.name);
+    a.printSupplies();
 menu:
     int choice = gameMenu(area);
     switch(choice) {
@@ -45,7 +46,6 @@ menu:
         goto menu;
     }
     a.updateStats();
-    a.printSupplies();
     std::cout << "\n";
     day++;
   }

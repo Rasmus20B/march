@@ -4,7 +4,6 @@
 
 #include "status.h"
 #include "supply_items.h"
-#include "trade_element.h"
 
 namespace march {
 struct Army {

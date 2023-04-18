@@ -21,8 +21,9 @@ int gameMenu(Area& a) {
 }
 
 void displayDayAndLocation(int day, std::string_view location) {
-    std::cout << "Day " << day << "\n=====================\n";
-    std::cout << "Location: " << location << "\n=====================\n";
+  std::cout << "\n=====================\n";
+  std::cout << "Day " << day << "\n=====================\n";
+  std::cout << "Location: " << location << "\n=====================\n";
 }
 
 void selectScout(Army& a) {
@@ -46,7 +47,7 @@ void scoutResult(Army& a, MissionReport& m) {
   switch(m.res) {
     case 1:
       std::cout << "scout successful, found food and stuff\n";
-      a.supplies += m.supplies;
+      a.items[ITEM_FOOD].quantity += m.supplies;
       break;
     case 2:
       std::cout << "found some food, but lost soldiers: \n";
@@ -55,7 +56,7 @@ void scoutResult(Army& a, MissionReport& m) {
         a.stats[m.dead.at(i)].dead();
         a.alive--;
       }
-      a.supplies += m.supplies;
+      a.items[ITEM_FOOD].quantity += m.supplies;
       break;
     case 3:
       std::cout << "the scouting party never returned\n";
@@ -73,7 +74,12 @@ void scoutResult(Army& a, MissionReport& m) {
 
 void displayTraderItems(Trader& t) {
   for(unsigned i = 0; i < t.items.size(); i++) {
-    std::cout << "(" << i << ") " <<itemNames[t.items.at(i).item] << " : " << t.items.at(i).quantity << "\n";
+    std::cout << "(" << i << ") " <<itemNames[t.items.at(i).item] << " : " << t.items.at(i).quantity << " @" << itemPrices[t.items.at(i).item] << " each\n";
+  }
+}
+void displayPlayerItems(Army& a) {
+  for(unsigned i = 0; i < a.items.size(); i++) {
+    std::cout << "(" << i << ") " << itemNames[a.items.at(i).item] << " : " << a.items.at(i).quantity << " @" << itemPrices[a.items.at(i).item] << " each\n";
   }
 }
 
@@ -89,7 +95,7 @@ void selectTrade(Army& a, Trader& t) {
   size_t choice = 0;
   bool finish = false;
   while(!finish) {
-    std::cout << "Please choose an item to add to trade.\n(9) To Finish Trade\n";
+    std::cout << "Please choose Trader Items to add to trade.\n(9) Next\n";
     std::cin >> choice;
     if(choice == 9) {
       break;
@@ -104,7 +110,29 @@ void selectTrade(Army& a, Trader& t) {
         std::cout << "Invalid quantity!\n";
         continue;
       }
-      addItemToTrade(tr, t.items[choice].item, quant);
+      addTraderItem(tr, t.items[choice].item, quant);
+    }
+  }
+  finish = false;
+
+  displayPlayerItems(a);
+  while(!finish) {
+    std::cout << "Please choose your Items to add to trade.\n(9) To Finish Trade\n";
+    std::cin >> choice;
+    if(choice == 9) {
+      break;
+    } else if(choice > t.items.size()) {
+      std::cout << "Invalid Item Choice!\n";
+      continue;
+    } else {
+      std::cout << "Please Select quantity of " << itemNames[t.items[choice].item] << "\n";
+      size_t quant{};
+      std::cin >> quant;
+      if(quant > t.items[choice].quantity) {
+        std::cout << "Invalid Quantity\n";
+        continue;
+      }
+      addPlayerItem(tr, t.items[choice].item, quant);
     }
   }
   makeTrade(a, t, tr);
