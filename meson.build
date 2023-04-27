@@ -10,8 +10,8 @@ project (
   ]
 )
 
-# protobuf_proj = subproject('protobuf')
-# protobuf_dep = dependency('protobuf', required : true) 
+sdl2_proj = subproject('sdl2')
+sdl2_dep = dependency('sdl2', required : true) 
 subdir('src')
 
 build_tests = get_option('build_tests') and not is_subproject
