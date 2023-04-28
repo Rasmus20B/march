@@ -39,16 +39,10 @@ int Gui::init() {
 
 uint8_t Gui::main_menu() {
 
-  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, 0x181818ff, WIDGET_NA, nullptr, 1));
-  widgets.push_back(Widget(280, 100, 50, 350 , 0x127f81ff, 0x181818ff, WIDGET_CLICKABLE | WIDGET_HOVER, []() {
-        return 1;
-        }, 2));
-  widgets.push_back(Widget(280, 100, 350, 350 , 0xffff00ff, 0xffffffff, WIDGET_CLICKABLE | WIDGET_HOVER, [](){
-        return 2;
-        }, 3));
+  MainMenu menu;
 
   SDL_RenderClear(mRenderer);
-  for(auto w : widgets) {
+  for(auto w : menu.widgets) {
     SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
     SDL_RenderFillRect(mRenderer, &w.rect);
   }
@@ -77,7 +71,7 @@ uint8_t Gui::main_menu() {
           break;
         case SDL_MOUSEBUTTONDOWN:
           SDL_GetMouseState(&mouse_x, &mouse_y);
-          for(auto w: widgets) {
+          for(auto w: menu.widgets) {
             if(w.flags & WIDGET_CLICKABLE && w.contains(mouse_x, mouse_y)) {
               choice = w.call();
               goto end;
@@ -86,8 +80,8 @@ uint8_t Gui::main_menu() {
           break;
         case SDL_MOUSEMOTION:
           SDL_GetMouseState(&mouse_x, &mouse_y);
-          for(auto &w : widgets) {
-            bool h = (w.flags & WIDGET_HOVER);
+          for(auto &w : menu.widgets) {
+            bool h = w.flags & WIDGET_HOVER;
             if(h && w.contains(mouse_x, mouse_y)) {
               if(!w.hover) {
                 w.setColBright();
@@ -102,7 +96,6 @@ uint8_t Gui::main_menu() {
               }
             }
           }
-
           break;
         case SDL_QUIT:
           choice = 2;
@@ -113,7 +106,7 @@ uint8_t Gui::main_menu() {
       // Redraw
       if(update) {
         SDL_RenderClear(mRenderer);
-        for(auto w : widgets) {
+        for(auto w : menu.widgets) {
             SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
             SDL_RenderFillRect(mRenderer, &w.rect);
         }
@@ -123,7 +116,6 @@ uint8_t Gui::main_menu() {
   }
 
 end:
-  widgets.clear();
   return choice; 
 }
 
@@ -138,7 +130,6 @@ void Gui::main_loop() {
   SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
   SDL_RenderClear(mRenderer);
   SDL_RenderPresent(mRenderer);
-
 
   SDL_Event e;
   bool quit = false;
