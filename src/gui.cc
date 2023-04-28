@@ -72,7 +72,6 @@ uint8_t Gui::main_menu() {
               choice = 2;
               goto end;
             default:
-              std::cout << "Invalid keypress: " << e.key.keysym.sym << "\n";
               break;
           }
           break;
@@ -87,27 +86,20 @@ uint8_t Gui::main_menu() {
           break;
         case SDL_MOUSEMOTION:
           SDL_GetMouseState(&mouse_x, &mouse_y);
-          std::cout << "NEW MOTION====================\n";
           for(auto &w : widgets) {
             bool h = (w.flags & WIDGET_HOVER);
             if(h && w.contains(mouse_x, mouse_y)) {
               if(!w.hover) {
-                std::cout << "You are hovering over a button " << w.m_id << "\n";
                 w.setColBright();
                 update = true;
                 w.hover = true;
               }
             } else if((h)) {
               if(w.hover) {
-                std::cout << w.m_id << " Just a hover that isn't activated\n";
-                std::cout << h << "\n";
-                std::cout << std::hex << w.flags <<"\n";
                 w.setColNorm();
                 w.hover = false;
                 update = true;
               }
-            } else {
-              std::cout << "not interacting with " << w.m_id << "\n";
             }
           }
 
@@ -122,7 +114,6 @@ uint8_t Gui::main_menu() {
       if(update) {
         SDL_RenderClear(mRenderer);
         for(auto w : widgets) {
-            std::cout << "setting " << w.m_id << " to colour : " << w.r << w.g << w.b <<  "\n";
             SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
             SDL_RenderFillRect(mRenderer, &w.rect);
         }
