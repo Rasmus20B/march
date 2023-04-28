@@ -38,10 +38,10 @@ int Gui::init() {
 uint8_t Gui::main_menu() {
 
   widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, WIDG_NA, nullptr));
-  widgets.push_back(Widget(100, 200, 100, 60, 0x127f81ff, WIDG_CLICKABLE, []() {
+  widgets.push_back(Widget(280, 100, 50, 350 , 0x127f81ff, WIDG_CLICKABLE, []() {
         return 1;
         }));
-  widgets.push_back(Widget(50, 25, 200, 300, 0xffffffff, WIDG_CLICKABLE, [](){
+  widgets.push_back(Widget(280, 100, 350, 350 , 0xffffffff, WIDG_CLICKABLE, [](){
         return 2;
         }));
 
@@ -71,7 +71,6 @@ uint8_t Gui::main_menu() {
               break;
           }
           break;
-
         case SDL_MOUSEBUTTONDOWN:
           int x, y;
           SDL_GetMouseState(&x, &y);
