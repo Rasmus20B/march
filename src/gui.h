@@ -14,7 +14,7 @@ enum WidgetFlags {
 
 struct Widget {
 public:
-  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const WidgetFlags f) {
+  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const WidgetFlags f, std::function<uint32_t()> fun) {
     rect.w = width;
     rect.h = height;
     rect.x = xpos;
@@ -25,7 +25,12 @@ public:
     b = 0xff & (colour >> 8);
     a = 0xff & (colour);
     flags = f;
+    call = fun;
   }
+
+  ~Widget() = default;
+
+  bool contains(const uint16_t x, const uint16_t y);
 
   SDL_Rect rect;
   uint32_t colour;
@@ -34,7 +39,7 @@ public:
   uint8_t b;
   uint8_t a;
   WidgetFlags flags;
-
+  std::function<uint32_t()> call;
 };
 
 class Gui {

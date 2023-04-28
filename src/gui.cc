@@ -4,6 +4,15 @@
 #include "SDL_render.h"
 #include "SDL_video.h"
 
+
+bool Widget::contains(const uint16_t x, const uint16_t y) {
+  if(x >= this->rect.x && x <= this->rect.x + this->rect.w
+      && y >= this->rect.y && y <= this->rect.y + this->rect.h) {
+    return true;
+  }
+  return false;
+}
+
 int Gui::init() {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cout << "SDL init failed." << std::endl;
@@ -28,14 +37,15 @@ int Gui::init() {
 
 uint8_t Gui::main_menu() {
 
-  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, WIDG_NA));
-  widgets.push_back(Widget(100, 200, 100, 60, 0x127f81ff, WIDG_CLICKABLE));
-  widgets.push_back(Widget(50, 25, 200, 300, 0xffffffff, WIDG_CLICKABLE));
+  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, WIDG_NA, nullptr));
+  widgets.push_back(Widget(100, 200, 100, 60, 0x127f81ff, WIDG_CLICKABLE, []() {
+        return 1;
+        }));
+  widgets.push_back(Widget(50, 25, 200, 300, 0xffffffff, WIDG_CLICKABLE, [](){
+        return 2;
+        }));
 
   SDL_RenderClear(mRenderer);
-  SDL_Rect background { screen_width, screen_height, 0, 0 };
-  SDL_SetRenderDrawColor(mRenderer, 100, 100, 100, 255);
-  SDL_RenderFillRect(mRenderer, &background);
   for(auto w : widgets) {
     SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
     SDL_RenderFillRect(mRenderer, &w.rect);
@@ -66,11 +76,9 @@ uint8_t Gui::main_menu() {
           int x, y;
           SDL_GetMouseState(&x, &y);
           for(auto w: widgets) {
-            if(w.flags & WIDG_CLICKABLE 
-                && (x >= w.rect.x && x <= w.rect.x + w.rect.w) 
-                && (y >= w.rect.y && y <= w.rect.y + w.rect.h)) {
-              std::cout << "You clicked the button\n";
-              break;
+            if(w.flags & WIDG_CLICKABLE && w.contains(x, y)) {
+              choice = w.call();
+              goto end;
             }
           }
           break;
