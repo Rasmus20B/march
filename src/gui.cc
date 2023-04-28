@@ -12,20 +12,25 @@ constexpr bool Widget::contains(const uint16_t x, const uint16_t y) {
 
 int Gui::init() {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
-    std::cout << "SDL init failed." << std::endl;
+    std::cerr << "SDL init failed." << "\n";
     return 1;
   } else {
-    mWindow = SDL_CreateWindow( "March Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    mWindow = SDL_CreateWindow( "March Game", 
+        SDL_WINDOWPOS_CENTERED, 
+        SDL_WINDOWPOS_CENTERED, 
+        screen_width, 
+        screen_height, 
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if( mWindow == nullptr )
     {
-      printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+      std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
       return 1;
     }
     else
     {
       mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-      if (mRenderer == nullptr) {
-        std::cout << "Error initializing _renderer: " << SDL_GetError() << std::endl;
+      if (!mRenderer) {
+        std::cerr << "Error initializing _renderer: " << SDL_GetError() << "\n";
       } 
     }
   }
@@ -34,13 +39,13 @@ int Gui::init() {
 
 uint8_t Gui::main_menu() {
 
-  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, WIDGET_NA, nullptr));
-  widgets.push_back(Widget(280, 100, 50, 350 , 0x127f81ff, WIDGET_CLICKABLE, []() {
+  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, 0x181818ff, WIDGET_NA, nullptr, 1));
+  widgets.push_back(Widget(280, 100, 50, 350 , 0x127f81ff, 0x181818ff, WIDGET_CLICKABLE | WIDGET_HOVER, []() {
         return 1;
-        }));
-  widgets.push_back(Widget(280, 100, 350, 350 , 0xffffffff, WIDGET_CLICKABLE, [](){
+        }, 2));
+  widgets.push_back(Widget(280, 100, 350, 350 , 0xffff00ff, 0xffffffff, WIDGET_CLICKABLE | WIDGET_HOVER, [](){
         return 2;
-        }));
+        }, 3));
 
   SDL_RenderClear(mRenderer);
   for(auto w : widgets) {
@@ -50,10 +55,13 @@ uint8_t Gui::main_menu() {
 
   SDL_RenderPresent(mRenderer);
 
+
+  int mouse_x, mouse_y;
   SDL_Event e;
   uint32_t choice = 0;
   while(!choice) {
-    while(SDL_WaitEvent(&e))
+    while(SDL_WaitEvent(&e)) {
+      bool update = false;
       switch(e.type) {
         case SDL_KEYDOWN:
           switch(e.key.keysym.sym) {
@@ -69,14 +77,41 @@ uint8_t Gui::main_menu() {
           }
           break;
         case SDL_MOUSEBUTTONDOWN:
-          int x, y;
-          SDL_GetMouseState(&x, &y);
+          SDL_GetMouseState(&mouse_x, &mouse_y);
           for(auto w: widgets) {
-            if(w.flags & WIDGET_CLICKABLE && w.contains(x, y)) {
+            if(w.flags & WIDGET_CLICKABLE && w.contains(mouse_x, mouse_y)) {
               choice = w.call();
               goto end;
             }
           }
+          break;
+        case SDL_MOUSEMOTION:
+          SDL_RenderClear(mRenderer);
+          SDL_GetMouseState(&mouse_x, &mouse_y);
+          std::cout << "NEW MOTION====================\n";
+          for(auto &w : widgets) {
+            bool h = (w.flags & WIDGET_HOVER);
+            if(h && w.contains(mouse_x, mouse_y)) {
+              if(!w.hover) {
+                std::cout << "You are hovering over a button " << w.m_id << "\n";
+                w.setColBright();
+                update = true;
+                w.hover = true;
+              }
+            } else if((h)) {
+              if(w.hover) {
+                std::cout << w.m_id << " Just a hover that isn't activated\n";
+                std::cout << h << "\n";
+                std::cout << std::hex << w.flags <<"\n";
+                w.setColNorm();
+                w.hover = false;
+                update = true;
+              }
+            } else {
+              std::cout << "not interacting with " << w.m_id << "\n";
+            }
+          }
+
           break;
         case SDL_QUIT:
           choice = 2;
@@ -84,9 +119,20 @@ uint8_t Gui::main_menu() {
         default:
           continue;
       }
+      // Redraw
+      if(update) {
+        for(auto w : widgets) {
+            std::cout << "setting " << w.m_id << " to colour : " << w.r << w.g << w.b <<  "\n";
+            SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
+            SDL_RenderFillRect(mRenderer, &w.rect);
+        }
+        SDL_RenderPresent(mRenderer);
+      }
+    }
   }
 
 end:
+  widgets.clear();
   return choice; 
 }
 
@@ -98,8 +144,10 @@ void Gui::main_loop() {
     return;
   }
 
+  SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
   SDL_RenderClear(mRenderer);
   SDL_RenderPresent(mRenderer);
+
 
   SDL_Event e;
   bool quit = false;

@@ -8,38 +8,65 @@
 #include <SDL.h>
 
 enum WidgetFlags {
-  WIDGET_NA,
-  WIDGET_CLICKABLE,
+  WIDGET_NA = 1,
+  WIDGET_CLICKABLE = 2,
+  WIDGET_HOVER = 4,
 };
 
 struct Widget {
 public:
-  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const WidgetFlags f, std::function<uint32_t()> fun) {
+  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const uint32_t br_col, uint8_t f, std::function<uint32_t()> fun, int id) {
     rect.w = width;
     rect.h = height;
     rect.x = xpos;
     rect.y = ypos;
-    colour = col;
-    r = 0xff & (colour >> 24);
-    g = 0xff & (colour >> 16);
-    b = 0xff & (colour >> 8);
-    a = 0xff & (colour);
+    norm_colour = col;
+    br_colour = br_col;
+    r = 0xff & (norm_colour >> 24);
+    g = 0xff & (norm_colour >> 16);
+    b = 0xff & (norm_colour >> 8);
+    a = 0xff & (norm_colour);
     flags = f;
     call = fun;
+    m_id = id;
   }
 
   ~Widget() = default;
 
   constexpr bool contains(const uint16_t x, const uint16_t y);
 
+  void setCol(uint32_t col) {
+    r = 0xff & (col >> 24);
+    g = 0xff & (col >> 16);
+    b = 0xff & (col >> 8);
+    a = 0xff & (col);
+  }
+
+  void setColBright() {
+    r = 0xff & (br_colour >> 24);
+    g = 0xff & (br_colour >> 16);
+    b = 0xff & (br_colour >> 8);
+    a = 0xff & (br_colour);
+  }
+  
+  void setColNorm() {
+    r = 0xff & (norm_colour >> 24);
+    g = 0xff & (norm_colour >> 16);
+    b = 0xff & (norm_colour >> 8);
+    a = 0xff & (norm_colour);
+  }
+
   SDL_Rect rect;
-  uint32_t colour;
+  std::function<uint32_t()> call;
+  uint32_t flags;
+  uint32_t norm_colour;
+  uint32_t br_colour;
   uint8_t r;
   uint8_t g;
   uint8_t b;
   uint8_t a;
-  WidgetFlags flags;
-  std::function<uint32_t()> call;
+  bool hover = false;
+  int m_id;
 };
 
 class Gui {
