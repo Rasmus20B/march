@@ -86,7 +86,6 @@ uint8_t Gui::main_menu() {
           }
           break;
         case SDL_MOUSEMOTION:
-          SDL_RenderClear(mRenderer);
           SDL_GetMouseState(&mouse_x, &mouse_y);
           std::cout << "NEW MOTION====================\n";
           for(auto &w : widgets) {
@@ -121,6 +120,7 @@ uint8_t Gui::main_menu() {
       }
       // Redraw
       if(update) {
+        SDL_RenderClear(mRenderer);
         for(auto w : widgets) {
             std::cout << "setting " << w.m_id << " to colour : " << w.r << w.g << w.b <<  "\n";
             SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
