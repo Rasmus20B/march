@@ -8,8 +8,8 @@
 #include <SDL.h>
 
 enum WidgetFlags {
-  WIDG_NA,
-  WIDG_CLICKABLE,
+  WIDGET_NA,
+  WIDGET_CLICKABLE,
 };
 
 struct Widget {
@@ -30,7 +30,7 @@ public:
 
   ~Widget() = default;
 
-  bool contains(const uint16_t x, const uint16_t y);
+  constexpr bool contains(const uint16_t x, const uint16_t y);
 
   SDL_Rect rect;
   uint32_t colour;

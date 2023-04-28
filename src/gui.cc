@@ -5,12 +5,9 @@
 #include "SDL_video.h"
 
 
-bool Widget::contains(const uint16_t x, const uint16_t y) {
-  if(x >= this->rect.x && x <= this->rect.x + this->rect.w
-      && y >= this->rect.y && y <= this->rect.y + this->rect.h) {
-    return true;
-  }
-  return false;
+constexpr bool Widget::contains(const uint16_t x, const uint16_t y) {
+  return (x >= this->rect.x && x <= this->rect.x + this->rect.w
+      && y >= this->rect.y && y <= this->rect.y + this->rect.h);
 }
 
 int Gui::init() {
@@ -37,11 +34,11 @@ int Gui::init() {
 
 uint8_t Gui::main_menu() {
 
-  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, WIDG_NA, nullptr));
-  widgets.push_back(Widget(280, 100, 50, 350 , 0x127f81ff, WIDG_CLICKABLE, []() {
+  widgets.push_back(Widget(screen_width, screen_height, 0, 0, 0xFFC420ff, WIDGET_NA, nullptr));
+  widgets.push_back(Widget(280, 100, 50, 350 , 0x127f81ff, WIDGET_CLICKABLE, []() {
         return 1;
         }));
-  widgets.push_back(Widget(280, 100, 350, 350 , 0xffffffff, WIDG_CLICKABLE, [](){
+  widgets.push_back(Widget(280, 100, 350, 350 , 0xffffffff, WIDGET_CLICKABLE, [](){
         return 2;
         }));
 
@@ -75,7 +72,7 @@ uint8_t Gui::main_menu() {
           int x, y;
           SDL_GetMouseState(&x, &y);
           for(auto w: widgets) {
-            if(w.flags & WIDG_CLICKABLE && w.contains(x, y)) {
+            if(w.flags & WIDGET_CLICKABLE && w.contains(x, y)) {
               choice = w.call();
               goto end;
             }
