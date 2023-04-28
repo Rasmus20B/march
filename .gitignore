@@ -1,4 +1,5 @@
 build/
 .cache/
-subprojects/protobuf-*
 subprojects/packagecache
+subprojects/*/
+.DS_Store

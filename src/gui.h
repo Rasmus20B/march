@@ -2,14 +2,39 @@
 
 #include <vector>
 #include <iostream>
+#include <functional>
 #include <thread>
 
 #include <SDL.h>
 
+enum WidgetFlags {
+  WIDG_NA,
+  WIDG_CLICKABLE,
+};
+
 struct Widget {
+public:
+  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const WidgetFlags f) {
+    rect.w = width;
+    rect.h = height;
+    rect.x = xpos;
+    rect.y = ypos;
+    colour = col;
+    r = 0xff & (colour >> 24);
+    g = 0xff & (colour >> 16);
+    b = 0xff & (colour >> 8);
+    a = 0xff & (colour);
+    flags = f;
+  }
+
+  SDL_Rect rect;
   uint32_t colour;
-  uint16_t id;
-  SDL_Rect r;
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+  uint8_t a;
+  WidgetFlags flags;
+
 };
 
 class Gui {
@@ -25,10 +50,11 @@ public:
   int exit();
 
 private:
-  static constexpr uint16_t screen_width = 1080;
-  static constexpr uint16_t screen_height = 920;
+  static constexpr uint16_t screen_width = 680;
+  static constexpr uint16_t screen_height = 480;
   std::vector<Widget> widgets;
-  SDL_Window* gWindow = NULL;
-  SDL_Surface* gScreenSurface = NULL;
+  SDL_Window* mWindow = nullptr;
+  SDL_Renderer* mRenderer = nullptr;
+  SDL_Surface* mScreenSurface = nullptr;
 };
 
