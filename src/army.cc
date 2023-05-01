@@ -14,24 +14,16 @@ void Army::generate(size_t sz) {
   std::vector<std::string> list{};
   std::string name;
 
-  std::cout << "gets here\n";
   while(std::getline(f, name)) {
     list.push_back((name));
   }
-
 
   std::uniform_int_distribution<int> distr(1, list.size() - 1);
   names.resize(sz);
   for(auto &i : names) {
     i = list[distr(generator)];
   }
-
-  for(auto &i : names) {
-    std::cout << "Generated: " << i << "\n";
-  }
   std::iota(ids.begin(), ids.end(), 0);
-
-  std::cout << "gets here\n";
 }
 
 void Army::updateStats() {

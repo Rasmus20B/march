@@ -11,11 +11,6 @@
 
 namespace march {
 
-constexpr bool Widget::contains(const uint16_t x, const uint16_t y) {
-return (x >= this->rect.x && x <= this->rect.x + this->rect.w
-    && y >= this->rect.y && y <= this->rect.y + this->rect.h);
-}
-
 int Gui::init() {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "SDL init failed.\n";
@@ -194,7 +189,6 @@ void Gui::main_loop() {
   MainGameScreen scr;
   widgets.insert(widgets.begin(), scr.w.begin(), scr.w.end());
 
-  std::cout << "Widgets Allocated: " << widgets.size() << "\n";
   while (!quit){
     int ticks = SDL_GetTicks();
     int sprite_n = (ticks / 100) % 4;
