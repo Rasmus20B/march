@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <fstream>
 
 #include "status.h"
 #include "supply_items.h"

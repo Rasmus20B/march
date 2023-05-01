@@ -36,7 +36,6 @@ public:
     call = fun;
     m_id = id;
   }
-
   ~Widget() = default;
 
   constexpr bool contains( uint16_t x,  uint16_t y);

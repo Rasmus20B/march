@@ -1,17 +1,40 @@
 #include "army.h"
+#include <iterator>
 
 namespace march {
-void Army::generate(size_t size) {
-  ids.resize(size);
-  stats.resize(size);
+void Army::generate(size_t sz) {
+  ids.resize(sz);
+  stats.resize(sz);
   alive = size;
+
+  std::random_device rd;
+  std::mt19937 generator(rd());
+
+  std::ifstream f("../assets/names.txt");
+  std::vector<std::string> list{};
+  std::string name;
+
+  std::cout << "gets here\n";
+  while(std::getline(f, name)) {
+    list.push_back((name));
+  }
+
+
+  std::uniform_int_distribution<int> distr(1, list.size() - 1);
+  names.resize(sz);
+  for(auto &i : names) {
+    i = list[distr(generator)];
+  }
+
+  for(auto &i : names) {
+    std::cout << "Generated: " << i << "\n";
+  }
   std::iota(ids.begin(), ids.end(), 0);
+
+  std::cout << "gets here\n";
 }
 
 void Army::updateStats() {
-  std::random_device rd;
-  std::mt19937 generator(rd());
-  std::uniform_int_distribution<int> distr(1, STATUS_SIZE - 1);
   for(auto &i : stats) {
     i.printFlags();
   }

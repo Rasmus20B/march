@@ -5,6 +5,14 @@
 namespace march {
 
 int gameloop() {
+  size_t day = 1;
+  size_t stage = 1;
+  size_t prevStage = stage;
+
+  Army a{};
+  a.generate(20);
+
+
   Gui gui;
   gui.init();
   gui.main_loop();

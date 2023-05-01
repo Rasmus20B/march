@@ -206,7 +206,7 @@ void Gui::main_loop() {
       }
     }
     SDL_RenderClear(mRenderer);
-    for(auto w : widgets) {
+    for(auto &w : widgets) {
         SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
         SDL_RenderFillRect(mRenderer, &w.rect);
     }
