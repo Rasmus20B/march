@@ -3,3 +3,4 @@ build/
 subprojects/packagecache
 subprojects/*/
 .DS_Store
+tut_spritesheet.png
