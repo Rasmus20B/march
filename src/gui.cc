@@ -40,6 +40,12 @@ int Gui::init() {
     std::cerr << "SDL IMG init failed.\n";
     return 1;
   }
+
+  /* Push Widget Sets to the Screen Container */
+  this->screen.store(TitleMenu{});
+  this->screen.store(MainHUD{});
+
+  std::cout << screen.size << "\n";
   return 0;
 }
 
@@ -52,10 +58,8 @@ void Gui::exit() {
 
 uint8_t Gui::main_menu() {
 
-  MainMenu menu;
-
   SDL_RenderClear(mRenderer);
-  for(auto w : menu.widgets) {
+  for(auto w : screen.sets[0].widgets) {
     SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
     SDL_RenderFillRect(mRenderer, &w.rect);
   }
@@ -83,7 +87,7 @@ uint8_t Gui::main_menu() {
           break;
         case SDL_MOUSEBUTTONDOWN:
           SDL_GetMouseState(&mouse_x, &mouse_y);
-          for(auto w: menu.widgets) {
+          for(auto w: screen.sets[0].widgets) {
             if(w.flags & WIDGET_CLICKABLE && w.contains(mouse_x, mouse_y)) {
               choice = w.call();
               goto end;
@@ -92,7 +96,7 @@ uint8_t Gui::main_menu() {
           break;
         case SDL_MOUSEMOTION:
           SDL_GetMouseState(&mouse_x, &mouse_y);
-          for(auto &w : menu.widgets) {
+          for(auto &w : screen.sets[0].widgets) {
             bool h = w.flags & WIDGET_HOVER;
             if(h && w.contains(mouse_x, mouse_y)) {
               if(!w.hover) {
@@ -118,7 +122,7 @@ uint8_t Gui::main_menu() {
       // Redraw
       if(update) {
         SDL_RenderClear(mRenderer);
-        for(auto w : menu.widgets) {
+        for(auto w : screen.sets[0].widgets) {
             SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
             SDL_RenderFillRect(mRenderer, &w.rect);
         }
@@ -149,7 +153,7 @@ int Gui::handle_event(SDL_Event const &e) {
       return 1;
       break;
     case SDL_MOUSEBUTTONDOWN:
-      for(auto &w: widgets) {
+      for(auto &w: screen.sets[screen.active_set].widgets) {
         int x, y;
         SDL_GetMouseState(&x, &y);
         if(w.flags & WIDGET_CLICKABLE && (w.contains(x, y))) {
@@ -180,14 +184,14 @@ void Gui::main_loop() {
 
   clear_screen();
 
+  screen.switch_to(1);
+
   SDL_Surface *image = IMG_Load("../assets/spriteSheet1.bmp");
   if(!image) std::cerr << "Unable to load image\n";
   SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, image);
 
   SDL_Event e;
   bool quit = false;
-  MainGameScreen scr;
-  widgets.insert(widgets.begin(), scr.w.begin(), scr.w.end());
 
   while (!quit){
     int ticks = SDL_GetTicks();
@@ -200,9 +204,9 @@ void Gui::main_loop() {
       }
     }
     SDL_RenderClear(mRenderer);
-    for(auto &w : widgets) {
-        SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
-        SDL_RenderFillRect(mRenderer, &w.rect);
+    for(auto &w : screen.sets[screen.active_set].widgets) {
+       SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
+       SDL_RenderFillRect(mRenderer, &w.rect);
     }
     SDL_RenderCopy(mRenderer, texture, &srcrect, &dstrect);
     SDL_RenderPresent(mRenderer);

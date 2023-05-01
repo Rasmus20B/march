@@ -3,19 +3,24 @@
 #include "widget_set.h"
 
 namespace march {
-struct Screen {
+class Screen {
+
+public:
   /* Stores a collection of widgetSets */
-  Screen(const WidgetSet set) {
-    sets.push_back(set);
+  Screen(const std::vector<WidgetSet>& set) {
+    sets = std::move(set);
   }
 
   Screen() = default;
   Screen(const Screen&) = delete;
 
-  void store();
+  void store(const WidgetSet& set);
   void switch_to(const size_t id);
   void remove(const size_t id);
+
   std::vector<WidgetSet> sets;
   std::vector<size_t> ids;
+  size_t active_set{};
+  size_t size{};
 };
 }
