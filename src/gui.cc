@@ -44,6 +44,8 @@ int Gui::init() {
   /* Push Widget Sets to the Screen Container */
   this->screen.store(TitleMenu{});
   this->screen.store(MainHUD{});
+  this->screen.store(TradeMenu{});
+  this->screen.store(ScoutMenu{});
 
   std::cout << screen.size << "\n";
   return 0;
@@ -161,6 +163,12 @@ int Gui::handle_event(SDL_Event const &e) {
             case 1:
               return 1;
               break;
+            case 3:
+              return 3;
+              break;
+            case 4:
+              return 4;
+              break;
             default:
               break;
           }
@@ -192,6 +200,7 @@ void Gui::main_loop() {
 
   SDL_Event e;
   bool quit = false;
+  bool update = false;
 
   while (!quit){
     int ticks = SDL_GetTicks();
@@ -199,10 +208,23 @@ void Gui::main_loop() {
     SDL_Rect srcrect = { sprite_n * 32, 0, 32, 64 };
     SDL_Rect dstrect = { 32, 0, 32, 64 };
     while (SDL_PollEvent(&e)){
-      if(handle_event(std::move(e)) == 1) {
-        return;
+      switch(handle_event(std::move(e))) {
+        case 1:
+          return;
+        case 2:
+          break;
+        case 3:
+          if(screen.active_set == 1) screen.switch_to(2);
+          else screen.switch_to(1);
+          update = true;
+          break;
+        case 4:
+          if(screen.active_set == 1) screen.switch_to(3);
+          else screen.switch_to(1);
+          break;
       }
     }
+
     SDL_RenderClear(mRenderer);
     for(auto &w : screen.sets[screen.active_set].widgets) {
        SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);

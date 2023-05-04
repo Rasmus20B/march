@@ -4,7 +4,6 @@
 
 namespace march {
 class Screen {
-
 public:
   /* Stores a collection of widgetSets */
   Screen(const std::vector<WidgetSet>& set) {

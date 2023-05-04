@@ -13,6 +13,10 @@
 // #include "widget_set.h"
 #include "screen.h"
 
+#include "../assets/title_menu.h"
+#include "../assets/trade_menu.h"
+#include "../assets/main_hud.h"
+
 namespace march {
 static constexpr uint16_t screen_width = 640;
 static constexpr uint16_t screen_height = 480;
@@ -33,7 +37,6 @@ public:
 
 private:
   Screen screen;
-  std::vector<Widget> widgets;
   SDL_Window* mWindow = nullptr;
   SDL_Renderer* mRenderer = nullptr;
   SDL_Surface* mScreenSurface = nullptr;

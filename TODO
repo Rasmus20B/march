@@ -9,3 +9,5 @@ TODO: Implement RANDOM EVENTS with decisions.
   - Decisions can completely alter the game and some may be a 1 hit game over
 
 TODO: All status effects are random chance based, with the odds changing depending on status
+
+THOUGHT: What if each WidgetSet got it's own event_handler() ????
