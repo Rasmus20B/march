@@ -72,7 +72,8 @@ int Gui::handle_event(SDL_Event const &e) {
       return 255;
       break;
     case SDL_KEYDOWN:
-      return 255;
+      if(e.key.keysym.sym == 'q')
+        return 255;
       break;
     case SDL_WINDOWEVENT:
       if(e.window.event == SDL_WINDOWEVENT_RESIZED) {
@@ -134,7 +135,7 @@ void Gui::main_loop() {
 
   while (!quit){
     int ticks = SDL_GetTicks();
-    int sprite_n = (ticks / 100) % 4;
+    // int sprite_n = (ticks / 100) % 4;
     // SDL_Rect srcrect = { sprite_n * 32, 0, 32, 64 };
     // SDL_Rect dstrect = { 32, 0, 32, 64 };
     while (SDL_PollEvent(&e)){
