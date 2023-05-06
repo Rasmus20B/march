@@ -118,6 +118,11 @@ uint8_t Gui::main_menu() {
         case SDL_QUIT:
           choice = 2;
           break;
+        case SDL_WINDOWEVENT:
+          if(e.window.event == SDL_WINDOWEVENT_RESIZED) {
+            SDL_SetWindowSize(mWindow, e.window.data1, e.window.data2);
+          }
+          break;
         default:
           continue;
       }
