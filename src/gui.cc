@@ -156,10 +156,10 @@ int Gui::handle_event(SDL_Event const &e) {
       return 1;
       break;
     case SDL_MOUSEBUTTONDOWN:
-      for(auto w: screen.sets[screen.active_set].widgets) {
+      for(auto &w: screen.sets[screen.active_set].widgets) {
         int x, y;
         SDL_GetMouseState(&x, &y);
-        if(w.flags & WIDGET_CLICKABLE && (w.contains(x, y))) {
+        if(w.flags & WIDGET_CLICKABLE && w.contains(x, y)) {
           switch(w.call()) {
             case 1:
               return 1;
@@ -202,10 +202,8 @@ int Gui::handle_event(SDL_Event const &e) {
         uint16_t old_h = config.screen_height;
         config.screen_width = e.window.data1;
         config.screen_height = e.window.data2;
-        for(auto &s : screen.sets) {
-          for(auto &w : s.widgets) {
+        for(auto &w : screen.sets[screen.active_set].widgets) {
           w.update(config.screen_width, config.screen_height, old_w, old_h);
-          }
         }
         return 255;
       }
