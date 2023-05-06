@@ -4,6 +4,7 @@
 #include <functional>
 #include <SDL.h>
 
+#include "config.h"
 namespace march {
 
 enum WidgetFlags {
@@ -32,7 +33,7 @@ public:
   ~Widget() = default;
 
   bool contains(const uint16_t x, const uint16_t y);
-
+  void update(uint16_t new_w, uint16_t new_h, uint16_t old_w, uint16_t old_h);
   void setColNorm();
   void setColBright();
   void setCol(uint32_t col);

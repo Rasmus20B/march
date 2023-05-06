@@ -1,3 +1,4 @@
+#pragma once
 
 #include "../src/widget_set.h"
 #include "../src/widget.h"
@@ -7,13 +8,13 @@ public:
   MainHUD() {
     widgets = {
       march::Widget(config.screen_width, config.screen_height, 0, 0, 0xffffffff, 0xffffffff, march::WIDGET_NA, nullptr, 0),
-      march::Widget(426, 200, 0, config.screen_height - 160, 0xffff00ff, 0xffffffff, march::WIDGET_CLICKABLE, [](){
+      march::Widget((config.screen_width / 3) * 2, config.screen_height / 3, 0, config.screen_height - config.screen_height / 3, 0xffff00ff, 0xffffffff, march::WIDGET_CLICKABLE, [](){
             std::cout << "You clicked the Yellow\n"; return 2;
             }, 1 ),
-      march::Widget(214, 160, 426, config.screen_height - 320, 0xff00ffff, 0xffffffff, march::WIDGET_CLICKABLE, []() {
+      march::Widget(config.screen_width / 3, config.screen_height - ((config.screen_height / 3) * 2), (config.screen_width / 3) * 2, config.screen_height - ((config.screen_height / 3) * 3), 0xff00ffff, 0xffffffff, march::WIDGET_CLICKABLE, []() {
             std::cout << "You clicked the Pink\n"; return 3;
             }, 2 ),
-      march::Widget(214, 160, 426, config.screen_height - 480, 0x00ffffff, 0xffffffff, march::WIDGET_CLICKABLE, []() {
+      march::Widget(((config.screen_width / 3) * 2), (config.screen_height / 3), ((config.screen_width / 3) * 2), config.screen_height - ((config.screen_height / 3) * 2), 0x00ffffff, 0xffffffff, march::WIDGET_CLICKABLE, []() {
             std::cout << "You clicked the Cyan\n"; return 4;
             }, 3),
       march::Widget(108, 160, 640 - 107, config.screen_height - 160, 0xff0000ff, 0xffffffff, march::WIDGET_CLICKABLE, []() {

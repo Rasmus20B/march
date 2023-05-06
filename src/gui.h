@@ -13,16 +13,11 @@
 // #include "widget_set.h"
 #include "screen.h"
 
-#include "../assets/title_menu.h"
-#include "../assets/trade_menu.h"
-#include "../assets/main_hud.h"
+#include "../assets/widget_sets.h"
 
 namespace march {
-static constexpr uint16_t screen_width = 640;
-static constexpr uint16_t screen_height = 480;
 
 class Gui {
- 
 public:
   Gui() = default;
   ~Gui() = default;

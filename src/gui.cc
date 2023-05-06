@@ -19,8 +19,8 @@ int Gui::init() {
     mWindow = SDL_CreateWindow( "March Game", 
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED, 
-        screen_width, 
-        screen_height, 
+        config.screen_width, 
+        config.screen_height, 
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if( mWindow == nullptr )
     {
@@ -47,7 +47,6 @@ int Gui::init() {
   this->screen.store(TradeMenu{});
   this->screen.store(ScoutMenu{});
 
-  std::cout << screen.size << "\n";
   return 0;
 }
 
@@ -72,7 +71,6 @@ uint8_t Gui::main_menu() {
   uint32_t choice = 0;
   while(!choice) {
     while(SDL_WaitEvent(&e)) {
-      std::cout << "Found Event " << e.type << "\n";
       bool update = false;
       switch(e.type) {
         case SDL_KEYDOWN:
@@ -97,6 +95,10 @@ uint8_t Gui::main_menu() {
           }
           break;
         case SDL_MOUSEMOTION:
+
+          /* Check if we are on a hoverable button and update it's colours.
+           * Also check if we moved away from a hoverable button and change 
+           * it's colours. */
           SDL_GetMouseState(&mouse_x, &mouse_y);
           for(auto &w : screen.sets[0].widgets) {
             bool h = w.flags & WIDGET_HOVER;
@@ -118,18 +120,12 @@ uint8_t Gui::main_menu() {
         case SDL_QUIT:
           choice = 2;
           break;
-        case SDL_WINDOWEVENT:
-          if(e.window.event == SDL_WINDOWEVENT_RESIZED) {
-            SDL_SetWindowSize(mWindow, e.window.data1, e.window.data2);
-          }
-          break;
         default:
           continue;
       }
-      // Redraw
       if(update) {
         SDL_RenderClear(mRenderer);
-        for(auto w : screen.sets[0].widgets) {
+        for(auto &w : screen.sets[0].widgets) {
             SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
             SDL_RenderFillRect(mRenderer, &w.rect);
         }
@@ -145,7 +141,7 @@ end:
 void Gui::clear_screen() {
   SDL_RenderClear(mRenderer);
   SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 100);
-  auto r = SDL_Rect{screen_width, screen_height, 0, 0};
+  auto r = SDL_Rect{config.screen_width, config.screen_height, 0, 0};
   SDL_RenderDrawRect(mRenderer, &r);
   SDL_RenderPresent(mRenderer);
   SDL_UpdateWindowSurface(mWindow);
@@ -160,7 +156,7 @@ int Gui::handle_event(SDL_Event const &e) {
       return 1;
       break;
     case SDL_MOUSEBUTTONDOWN:
-      for(auto &w: screen.sets[screen.active_set].widgets) {
+      for(auto w: screen.sets[screen.active_set].widgets) {
         int x, y;
         SDL_GetMouseState(&x, &y);
         if(w.flags & WIDGET_CLICKABLE && (w.contains(x, y))) {
@@ -181,6 +177,38 @@ int Gui::handle_event(SDL_Event const &e) {
       }
       break;
     case SDL_MOUSEMOTION:
+      int mouse_x, mouse_y;
+      SDL_GetMouseState(&mouse_x, &mouse_y);
+      for(auto &w : screen.sets[screen.active_set].widgets) {
+        bool h = w.flags & WIDGET_HOVER;
+        if(h && w.contains(mouse_x, mouse_y)) {
+          if(!w.hover) {
+            w.setColBright();
+            w.hover = true;
+          }
+        } else if((h)) {
+          if(w.hover) {
+            w.setColNorm();
+            w.hover = false;
+          }
+        }
+      }
+      return 254;
+      break;
+    case SDL_WINDOWEVENT:
+      if(e.window.event == SDL_WINDOWEVENT_RESIZED) {
+        SDL_SetWindowSize(mWindow, e.window.data1, e.window.data2);
+        uint16_t old_w = config.screen_width;
+        uint16_t old_h = config.screen_height;
+        config.screen_width = e.window.data1;
+        config.screen_height = e.window.data2;
+        for(auto &s : screen.sets) {
+          for(auto &w : s.widgets) {
+          w.update(config.screen_width, config.screen_height, old_w, old_h);
+          }
+        }
+        return 255;
+      }
       break;
     default:
       break;
@@ -195,8 +223,6 @@ void Gui::main_loop() {
     return;
   }
 
-  clear_screen();
-
   screen.switch_to(1);
 
   SDL_Surface *image = IMG_Load("../assets/spriteSheet1.bmp");
@@ -205,7 +231,8 @@ void Gui::main_loop() {
 
   SDL_Event e;
   bool quit = false;
-  bool update = false;
+  bool update = true;
+  bool w_update = false;
 
   while (!quit){
     int ticks = SDL_GetTicks();
@@ -226,17 +253,30 @@ void Gui::main_loop() {
         case 4:
           if(screen.active_set == 1) screen.switch_to(3);
           else screen.switch_to(1);
+          update = true;
+          break;
+        case 254:
+          update = true;
+          break;
+        case 255:
+          update = true;
+        default:
           break;
       }
     }
-
     SDL_RenderClear(mRenderer);
-    for(auto &w : screen.sets[screen.active_set].widgets) {
-       SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
-       SDL_RenderFillRect(mRenderer, &w.rect);
+    if(update) {
+      for(auto &w : screen.sets[screen.active_set].widgets) {
+        SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
+        SDL_RenderFillRect(mRenderer, &w.rect);
+      }
+      SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+      SDL_RenderPresent(mRenderer);
     }
-    SDL_RenderCopy(mRenderer, texture, &srcrect, &dstrect);
-    SDL_RenderPresent(mRenderer);
+    update = false;
+    // if(screen.active_set == 1) {
+    //   SDL_RenderCopy(mRenderer, texture, &srcrect, &dstrect);
+    // }
   }
   Gui::exit();
 }

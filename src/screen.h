@@ -9,7 +9,6 @@ public:
   Screen(const std::vector<WidgetSet>& set) {
     sets = std::move(set);
   }
-
   Screen() = default;
   Screen(const Screen&) = delete;
 
