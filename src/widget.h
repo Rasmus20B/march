@@ -2,15 +2,20 @@
 
 #include <cstdint>
 #include <functional>
+#include <string_view>
+#include <iostream>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "config.h"
+#include "widget_text.h"
 namespace march {
 
 enum WidgetFlags {
   WIDGET_NA = 1,
   WIDGET_CLICKABLE = 2,
   WIDGET_HOVER = 4,
+  WIDGET_TEXT = 8,
 };
 
 struct Widget {
@@ -30,6 +35,30 @@ public:
     call = fun;
     m_id = id;
   }
+  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const uint32_t br_col, uint8_t f, std::function<uint32_t()> fun, std::string_view text, TTF_Font *font, uint32_t textcol, size_t id) {
+    rect.w = width;
+    rect.h = height;
+    rect.x = xpos;
+    rect.y = ypos;
+    this->text.m_text = text;
+    this->text.m_font = font;
+    if ( !this->text.m_font ) {
+      std::cerr << "Failed to load font: " << TTF_GetError() << "\n";
+    }
+    this->text.m_textcol.r = 0xff & (textcol >> 24);
+    this->text.m_textcol.g = 0xff & (textcol >> 16);
+    this->text.m_textcol.b = 0xff & (textcol >> 8);
+    this->text.m_textcol.a = 0xff & textcol;
+    norm_colour = col;
+    br_colour = br_col;
+    r = 0xff & (norm_colour >> 24);
+    g = 0xff & (norm_colour >> 16);
+    b = 0xff & (norm_colour >> 8);
+    a = 0xff & (norm_colour);
+    flags = f;
+    call = fun;
+    m_id = id;
+  }
   ~Widget() = default;
 
   bool contains(const uint16_t x, const uint16_t y);
@@ -39,6 +68,7 @@ public:
   void setCol(uint32_t col);
 
   SDL_Rect rect;
+  WidgetText text;
   std::function<uint32_t()> call;
   size_t m_id;
   uint32_t flags;

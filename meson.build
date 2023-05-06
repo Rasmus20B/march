@@ -14,6 +14,8 @@ sdl2_proj = subproject('sdl2')
 sdl2_dep = dependency('sdl2', required : true) 
 sdl2_image_proj = subproject('sdl2_image')
 sdl2_image_dep = dependency('sdl2_image', required : true) 
+sdl2_ttf_proj = subproject('sdl2_ttf')
+sdl2_ttf_dep = dependency('sdl2_ttf', required : true) 
 subdir('src')
 
 build_tests = get_option('build_tests') and not is_subproject

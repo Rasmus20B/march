@@ -6,6 +6,7 @@
 #include "SDL_timer.h"
 #include "SDL_video.h"
 #include "sprite.h"
+#include "widget.h"
 #include <iterator>
 
 
@@ -39,6 +40,10 @@ int Gui::init() {
   if(!IMG_Init(IMG_INIT_PNG)) {
     std::cerr << "SDL IMG init failed.\n";
     return 1;
+  }
+
+  if ( TTF_Init() < 0 ) {
+    std::cout << "Error initializing SDL_ttf: " << TTF_GetError() << "\n";
   }
 
   /* Push Widget Sets to the Screen Container */
@@ -124,7 +129,7 @@ int Gui::handle_event(SDL_Event const &e) {
   return 0;
 }
 void Gui::main_loop() {
-  SDL_Surface *image = IMG_Load("../assets/spriteSheet1.bmp");
+  SDL_Surface *image = IMG_Load("../assets/sprite_sheets/spriteSheet1.bmp");
   if(!image) std::cerr << "Unable to load image\n";
   SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, image);
 
@@ -170,6 +175,13 @@ void Gui::main_loop() {
       for(auto &w : screen.sets[screen.active_set].widgets) {
         SDL_SetRenderDrawColor(mRenderer, w.r, w.g, w.b, w.a);
         SDL_RenderFillRect(mRenderer, &w.rect);
+        if(w.flags & march::WIDGET_TEXT) {
+          SDL_Texture* text_texture;
+          SDL_Surface* text = TTF_RenderText_Solid( w.text.m_font, w.text.m_text.data(), w.text.m_textcol );
+          text_texture = SDL_CreateTextureFromSurface( mRenderer, text );
+          SDL_Rect dest = { w.rect.x, w.rect.y, text->w , text->h  };
+          SDL_RenderCopy( mRenderer, text_texture, &dest, nullptr );
+        }
       }
       SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
       SDL_RenderPresent(mRenderer);
