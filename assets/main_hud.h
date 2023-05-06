@@ -19,7 +19,7 @@ public:
             }, 3),
       march::Widget(108, 160, 640 - 107, config.screen_height - 160, 0xff0000ff, 0xffffffff, march::WIDGET_CLICKABLE, []() {
             std::cout << "You Clicked the Red\n";
-            std::cout << "Quitting Game!\n"; return 1;
+            std::cout << "Quitting Game!\n"; return 255;
             }, 4),
       march::Widget(108, 160, 640 - 214, config.screen_height - 160, 0x0000ffff, 0xffffffff, march::WIDGET_CLICKABLE, []() {
             std::cout << "You Clicked the Navy Blue\n"; return 5;

@@ -4,6 +4,7 @@
 
 namespace march {
 
+[[gnu::const]]
 bool Widget::contains(const uint16_t x, const uint16_t y) {
 return (x >= this->rect.x && x <= this->rect.x + this->rect.w
     && y >= this->rect.y && y <= this->rect.y + this->rect.h);
