@@ -19,26 +19,31 @@ namespace march {
 
   }
 
-  void Gui::main_loop() {
-    screen.switch_to(0);
-    while(!WindowShouldClose()) {
-    bool update = true;
-      for(auto &w : CUR_SCREEN.widgets) {
-        bool h = w.flags & WIDGET_HOVER;
-        if(h && w.contains(GetMouseX(), GetMouseY())) {
-          if(!w.hover) {
-           w.setColBright();
-           w.hover = true;
-          } else if((h)) {
-            if(w.hover) {
-             w.setColNorm();
-             w.hover = false;
-            }
+  bool Gui::update_widgets() {
+    bool update = false;
+    for(auto &w : CUR_SCREEN.widgets) {
+      bool h = w.flags & WIDGET_HOVER;
+      if(h && w.contains(GetMouseX(), GetMouseY())) {
+        if(!w.hover) {
+         w.setColBright();
+         w.hover = true;
+        } else if((h)) {
+          if(w.hover) {
+           w.setColNorm();
+           w.hover = false;
           }
         }
       }
+      update = true;
+    }
+    return update;
+  }
+
+  void Gui::main_loop() {
+    screen.switch_to(0);
+    while(!WindowShouldClose()) {
       BeginDrawing();
-      if(update) {
+      if(update_widgets()) {
         ClearBackground(RAYWHITE);
         DrawText("March", 20, 20, 40, BLACK);
         for(auto &w : screen.sets[screen.active_set].widgets) {
@@ -48,7 +53,6 @@ namespace march {
       }
       DrawFPS((config.screen_width / 6) * 5, 20);
       EndDrawing();
-      update = false;
     }
     CloseWindow();
   }

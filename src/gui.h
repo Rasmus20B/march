@@ -28,11 +28,11 @@ public:
 
   int init();
   void main_loop();
+  bool update_widgets();
   // int handle_event(SDL_Event const &e);
   // void exit();
   // void clear_screen();
 
-private:
   Screen screen;
   // SDL_Window* mWindow = nullptr;
   // SDL_Renderer* mRenderer = nullptr;
