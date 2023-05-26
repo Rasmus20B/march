@@ -21,17 +21,20 @@ namespace march {
 
   bool Gui::update_widgets() {
     bool update = false;
+    uint32_t mousex = GetMouseX();
+    uint32_t mousey = GetMouseY();
+
     for(auto &w : CUR_SCREEN.widgets) {
       bool h = w.flags & WIDGET_HOVER;
-      if(h && w.contains(GetMouseX(), GetMouseY())) {
+      if(h && w.contains(mousex, mousey)) {
         if(!w.hover) {
          w.setColBright();
          w.hover = true;
-        } else if((h)) {
-          if(w.hover) {
-           w.setColNorm();
-           w.hover = false;
-          }
+        } 
+      }else if((h)) {
+        if(w.hover) {
+         w.setColNorm();
+         w.hover = false;
         }
       }
       update = true;
