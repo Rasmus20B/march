@@ -5,9 +5,6 @@
 #include <functional>
 #include <thread>
 
-// #include <SDL.h>
-// #include <SDL_image.h>
-//
 #include "raylib.h"
 
 #include "sprite.h"
@@ -20,6 +17,7 @@
 namespace march {
 
 #define CUR_SCREEN screen.sets[screen.active_set]
+
 class Gui {
 public:
   Gui() = default;
