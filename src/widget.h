@@ -9,6 +9,8 @@
 #include "config.h"
 #include "widget_text.h"
 
+#include "widget_return.h"
+
 #include "raylib.h"
 
 namespace march {
@@ -22,7 +24,7 @@ enum WidgetFlags {
 
 struct Widget {
 public:
-  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const uint32_t br_col, uint8_t f, std::function<uint32_t()> fun, size_t id) {
+  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const uint32_t br_col, uint8_t f, std::function<WidgetReturn()> fun, size_t id) {
     rect.width = width;
     rect.height = height;
     rect.x = xpos;
@@ -37,7 +39,7 @@ public:
     call = fun;
     m_id = id;
   }
-  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const uint32_t br_col, uint8_t f, std::function<uint32_t()> fun, std::string_view text, FontType font, uint16_t font_size, uint32_t textcol, size_t id) {
+  Widget(const uint16_t width, const uint16_t height, const uint16_t xpos, const uint16_t ypos, const uint32_t col, const uint32_t br_col, uint8_t f, std::function<WidgetReturn()> fun, std::string_view text, FontType font, uint16_t font_size, uint32_t textcol, size_t id) {
     rect.width = width;
     rect.height = height;
     rect.x = xpos;
@@ -69,7 +71,7 @@ public:
 
   Rectangle rect;
   WidgetText text;
-  std::function<uint32_t()> call;
+  std::function<WidgetReturn()> call;
   size_t m_id;
   uint32_t flags;
   uint32_t norm_colour;

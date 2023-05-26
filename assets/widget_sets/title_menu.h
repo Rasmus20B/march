@@ -15,12 +15,12 @@ struct TitleMenu : public march::WidgetSet {
                    config.screen_width / 3, config.screen_height / 5,
                    config.screen_width / 8, (config.screen_height / 3) * 2, 0x127f81ff, 0x181818ff,
                    march::WIDGET_CLICKABLE | march::WIDGET_HOVER | march::WIDGET_TEXT,
-                   []() { return 1; }, "Start Game", FONT_DEFAULT, 20, 0x000000ff, 2),
+                   []() { return march::WidgetReturn{march::WIDGET_RET_SWITCH_SCR, 1}; }, "Start Game", FONT_DEFAULT, 20, 0x000000ff, 2),
                march::Widget(
                    config.screen_width / 3, config.screen_height / 5,
                    config.screen_width / 5 + (config.screen_width / 3), (config.screen_height / 3) * 2,
                    0xffff00ff, 0xffffffff,
                    march::WIDGET_CLICKABLE | march::WIDGET_HOVER | march::WIDGET_TEXT,
-                   []() { return 2; }, "Quit", FONT_DEFAULT, 20,  0x000000ff, 3)};
+                   []() { return march::WidgetReturn{march::WIDGET_RET_EXIT, 1}; }, "Quit", FONT_DEFAULT, 20,  0x000000ff, 3)};
   }
 };
