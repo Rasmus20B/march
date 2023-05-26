@@ -1,10 +1,13 @@
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#pragma once
+
 #include <string_view>
 
+#include "raylib.h"
+
 struct WidgetText {
-  TTF_Font *m_font;
   std::string_view m_text;
-  SDL_Color m_textcol;
+  FontType m_font;
+  uint16_t m_size;
+  Color m_color;
 };

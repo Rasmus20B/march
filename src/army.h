@@ -8,7 +8,6 @@
 
 namespace march {
 struct Army {
-
   Army() {
     for(int i = 0; i < ITEM_SIZE; i++) {
       items[i].item = static_cast<TradingItem>(i);

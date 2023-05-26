@@ -3,6 +3,7 @@
 #include "widget_set.h"
 
 namespace march {
+
 class Screen {
 public:
   /* Stores a collection of widgetSets */
@@ -18,7 +19,7 @@ public:
 
   std::vector<WidgetSet> sets;
   std::vector<size_t> ids;
-  size_t active_set{};
-  size_t size{};
+  size_t active_set;
+  size_t size;
 };
 }

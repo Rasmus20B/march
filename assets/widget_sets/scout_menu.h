@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../src/widget_set.h"
-#include "../src/widget.h"
+#include "../../src/widget_set.h"
+#include "../../src/widget.h"
 
 class ScoutMenu : public march::WidgetSet {
 public:
